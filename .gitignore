@@ -39,3 +39,13 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+/allure-results/*
+/allure-report/*
+
+/.idea/copilot.data.migration.ask2agent.xml
+/.idea/encodings.xml
+/.idea/misc.xml
+/.idea/vcs.xml
+/.idea/.gitignore
+
