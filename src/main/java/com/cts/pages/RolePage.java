@@ -22,7 +22,7 @@ public class RolePage extends BasePage {
         this.addRoleButton = page.locator("header button");
         this.roleNameInput = page.locator("input[name='roleName']");
         this.addButton = page.locator("button[type='submit']");
-        this.roleList = page.locator("tbody tr");
+        this.roleList = page.locator("tbody td");
     }
 
     @Step("Click on Add Role button in header")
@@ -47,11 +47,15 @@ public class RolePage extends BasePage {
         enterRoleName(roleName);
         clickAddRoleButton();
         page.waitForCondition(() -> !addButton.isVisible());
+
         return this;
     }
 
     @Step("Verifying that role with name: {roleName} is added to the list")
-    public void verifyRoleAdded(String roleName) {
+    public RolePage verifyRoleAdded(String roleName) {
         assertThat(roleList.filter(new Locator.FilterOptions().setHasText(roleName))).isVisible();
+        attachScreenshot(page, "Role Added: " + roleName);
+
+        return this;
     }
 }

@@ -1,7 +1,9 @@
 package com.base;
 
 import com.cts.utils.PagenameEnums;
+import com.microsoft.playwright.BrowserContext;
 import com.microsoft.playwright.Page;
+import com.microsoft.playwright.Playwright;
 import com.microsoft.playwright.assertions.PlaywrightAssertions;
 import org.athena.LaunchBrowser;
 import org.athena.ReadConfigData;
@@ -12,21 +14,28 @@ import java.util.List;
 import java.util.Properties;
 
 import static com.cts.utils.NavigateUtils.user_role_page_url;
+import static com.cts.utils.NavigateUtils.users_page_url;
 
 public class BaseTests {
 
     LaunchBrowser launchBrowser = new LaunchBrowser();
 
     protected Page page;
+    protected BrowserContext browserContext;
+    protected Playwright playwright;
 
     @BeforeMethod
     public void beforeMethod() {
-        List<Object> playwrightObjects = launchBrowser
-                .initiateBrowserAndApplication(fetchBaseConfigData().getProperty("browser"),
-                        fetchBaseConfigData().getProperty("url"));
-        page = (Page) playwrightObjects.get(2);
-        page.setDefaultTimeout(30000);
-        PlaywrightAssertions.setDefaultAssertionTimeout(15000);
+        if (page == null) {
+            List<Object> playwrightObjects = launchBrowser
+                    .initiateBrowserAndApplication(fetchBaseConfigData().getProperty("browser"),
+                            fetchBaseConfigData().getProperty("url"));
+            page = (Page) playwrightObjects.get(2);
+            browserContext = (BrowserContext) playwrightObjects.get(1);
+            playwright = (Playwright) playwrightObjects.get(0);
+            page.setDefaultTimeout(30000);
+            PlaywrightAssertions.setDefaultAssertionTimeout(15000);
+        }
     }
 
     private Properties fetchBaseConfigData() {
@@ -38,6 +47,8 @@ public class BaseTests {
     public void navigateTo(String pageName) {
         if (pageName.equals(String.valueOf(PagenameEnums.user_role))) {
             page.navigate(user_role_page_url);
+        } else if (pageName.equals(String.valueOf(PagenameEnums.users))) {
+            page.navigate(users_page_url);
         }
     }
 

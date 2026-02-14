@@ -42,4 +42,8 @@ public class TestData {
     public int getTodaysDay() {
         return LocalDate.now().getDayOfMonth();
     }
+
+    public static String generateRandomEmail() {
+        return generateRandomValue(8) + "@" + generateRandomValue(5) + ".com";
+    }
 }

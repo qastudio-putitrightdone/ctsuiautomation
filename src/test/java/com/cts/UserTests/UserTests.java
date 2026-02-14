@@ -1,10 +1,10 @@
-package com.cts.RoleTests;
+package com.cts.UserTests;
 
 import com.base.BaseTests;
 import com.cts.api.CtsApiClient;
 import com.cts.pages.CtsDashboardPage;
 import com.cts.pages.LoginPage;
-import com.cts.pages.RolePage;
+import com.cts.pages.UsersPage;
 import com.cts.utils.PagenameEnums;
 import com.microsoft.playwright.Playwright;
 import io.qameta.allure.Epic;
@@ -13,32 +13,28 @@ import io.qameta.allure.Story;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
 
-import static com.cts.utils.TestData.generateRandomValue;
-
-public class RoleTests extends BaseTests {
+public class UserTests extends BaseTests {
 
     private ThreadLocal<String> loginAccess = new ThreadLocal<>();
     private ThreadLocal<Playwright> getPlaywright = new ThreadLocal<>();
 
     @Epic("Access Management")
-    @Feature("Roles")
-    @Story("Add New Role")
-    @Test(dataProviderClass = AddRoleData.class, dataProvider = "addRoleData",
-            description = "Verify that a new role can be added successfully")
-    public void checkAddNewRole(String userId, String password) {
+    @Feature("Users")
+    @Story("Add New User")
+    @Test(dataProviderClass = AddUserData.class, dataProvider = "addUserData")
+    public void checkAddNewAdminUser(String userId, String password) {
         getPlaywright.set(playwright);
         LoginPage loginPage = new LoginPage(page);
         loginAccess.set(loginPage.loginToCTS(userId, password));
         CtsDashboardPage dashboardPage = new CtsDashboardPage(page);
         dashboardPage
                 .verifyDashboardPageNavigation();
-        navigateTo(String.valueOf(PagenameEnums.user_role));
-        RolePage rolePage = new RolePage(page);
-        String newRoleName = generateRandomValue(6);
-        rolePage
-                .addNewRole(newRoleName);
-        rolePage
-                .verifyRoleAdded(newRoleName);
+        navigateTo(String.valueOf(PagenameEnums.users));
+        UsersPage usersPage = new UsersPage(page);
+        String addedUserId = usersPage
+                .createRandomAdminUser();
+        usersPage
+                .verifyUserAdded(addedUserId);
     }
 
     @AfterMethod(alwaysRun = true)

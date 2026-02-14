@@ -1,5 +1,6 @@
 package com.cts.pages;
 
+import com.google.gson.JsonParser;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import io.qameta.allure.Step;
@@ -12,6 +13,7 @@ public class LoginPage extends BasePage {
     private Locator userIdInput;
     private Locator passwordInput;
     private Locator loginButton;
+    private ThreadLocal<String> accessToken = new ThreadLocal<>();
 
     public LoginPage(Page page) {
         super(page);
@@ -39,10 +41,18 @@ public class LoginPage extends BasePage {
     }
 
     @Step("Logging in to CTS with user ID: {userId}")
-    public CtsDashboardPage loginToCTS(String userId, String password) {
+    public String loginToCTS(String userId, String password) {
         enterUserId(userId);
         enterPassword(password);
-        clickLogin();
-        return new CtsDashboardPage(page);
+        page.waitForResponse(response -> {
+            if (response.url().contains("auth/login") && response.status() == 200) {
+                accessToken.set(JsonParser.parseString(response.text()).getAsJsonObject().get("details").getAsJsonObject().get("accessToken").getAsString());
+                return true;
+            }
+            return false;
+        }, loginButton::click);
+        attachScreenshot(page, "Login Successful for user");
+
+        return accessToken.get();
     }
 }

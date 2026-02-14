@@ -18,12 +18,14 @@ public class CtsDashboardPage extends BasePage {
 
     public CtsDashboardPage verifyDashboardPageNavigation() {
         page.waitForURL("**/dashboard");
+
         return this;
     }
 
     public LoginPage logoutFromCts() {
         logoutButton.click();
         page.waitForURL("**/sign-in");
+
         return new LoginPage(page);
     }
 }
