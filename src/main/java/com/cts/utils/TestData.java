@@ -39,6 +39,10 @@ public class TestData {
         return generate(length, ALPHA_LOWER);
     }
 
+    public static String generateRandomNumber(int length) {
+        return generate(length, DIGITS);
+    }
+
     public int getTodaysDay() {
         return LocalDate.now().getDayOfMonth();
     }

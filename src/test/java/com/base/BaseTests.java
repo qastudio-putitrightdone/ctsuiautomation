@@ -13,8 +13,7 @@ import org.testng.annotations.BeforeMethod;
 import java.util.List;
 import java.util.Properties;
 
-import static com.cts.utils.NavigateUtils.user_role_page_url;
-import static com.cts.utils.NavigateUtils.users_page_url;
+import static com.cts.utils.NavigateUtils.*;
 
 public class BaseTests {
 
@@ -47,6 +46,8 @@ public class BaseTests {
             page.navigate(user_role_page_url);
         } else if (pageName.equals(String.valueOf(PagenameEnums.users))) {
             page.navigate(users_page_url);
+        } else if (pageName.equals(String.valueOf(PagenameEnums.return_reason))) {
+            page.navigate(return_reason_page_url);
         }
     }
 
