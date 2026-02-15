@@ -41,6 +41,46 @@ public class RoleTests extends BaseTests {
                 .verifyRoleAdded(newRoleName);
     }
 
+    @Epic("Access Management")
+    @Feature("Roles")
+    @Story("Add New Role")
+    @Test(dataProviderClass = AddRoleData.class, dataProvider = "addRoleData",
+            description = "Verify that a new role can be added successfully")
+    public void checkMandatoryFieldErrorMessage(String userId, String password) {
+        getPlaywright.set(playwright);
+        LoginPage loginPage = new LoginPage(page);
+        loginAccess.set(loginPage.loginToCTS(userId, password));
+        CtsDashboardPage dashboardPage = new CtsDashboardPage(page);
+        dashboardPage
+                .verifyDashboardPageNavigation();
+        navigateTo(String.valueOf(PagenameEnums.user_role));
+        RolePage rolePage = new RolePage(page);
+        rolePage.clickAddRoleButtonInHeader();
+        rolePage.clickAddRoleButton();
+        rolePage.verifyMandatoryFieldErrorMessage();
+    }
+
+    @Epic("Access Management")
+    @Feature("Roles")
+    @Story("Add New Role")
+    @Test(dataProviderClass = AddRoleData.class, dataProvider = "addRoleData",
+            description = "Verify that a new role addition can be cancelled successfully")
+    public void checkCancelAddNewRole(String userId, String password) {
+        getPlaywright.set(playwright);
+        LoginPage loginPage = new LoginPage(page);
+        loginAccess.set(loginPage.loginToCTS(userId, password));
+        CtsDashboardPage dashboardPage = new CtsDashboardPage(page);
+        dashboardPage
+                .verifyDashboardPageNavigation();
+        navigateTo(String.valueOf(PagenameEnums.user_role));
+        RolePage rolePage = new RolePage(page);
+        String newRoleName = generateRandomValue(6);
+        rolePage
+                .cancelNewRole(newRoleName);
+        rolePage
+                .verifyRoleNotAdded(newRoleName);
+    }
+
     @AfterMethod(alwaysRun = true)
     public void clean() {
         CtsApiClient ctsApiClient = new CtsApiClient(getPlaywright.get(), loginAccess.get());

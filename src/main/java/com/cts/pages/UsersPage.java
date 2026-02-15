@@ -2,6 +2,7 @@ package com.cts.pages;
 
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
+import com.microsoft.playwright.options.AriaRole;
 import io.qameta.allure.Step;
 import org.athena.BasePage;
 
@@ -24,6 +25,7 @@ public class UsersPage extends BasePage {
     private Locator mobileNumberInput;
     private Locator addButton;
     private Locator userList;
+    private Locator cancelButton;
 
     public UsersPage(Page page) {
         super(page);
@@ -38,11 +40,14 @@ public class UsersPage extends BasePage {
         this.mobileNumberInput = page.locator("[name='contactNo']");
         this.addButton = page.locator("button[type='submit']");
         this.userList = page.locator("tbody td");
+        this.cancelButton = page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Cancel"));
     }
 
     @Step("Click on Add User button in header")
-    private void clickAddUserButtonInHeader() {
+    public UsersPage clickAddUserButtonInHeader() {
         addUserButton.click();
+
+        return this;
     }
 
     @Step("Selecting role ID")
@@ -89,7 +94,7 @@ public class UsersPage extends BasePage {
     }
 
     @Step("Click on Add button to add new user")
-    private void clickAddUserButton() {
+    public void clickAddUserButton() {
         addButton.click();
     }
 
@@ -113,5 +118,38 @@ public class UsersPage extends BasePage {
     public void verifyUserAdded(String userIdentifier) {
         assertThat(userList.filter(new Locator.FilterOptions().setHasText(userIdentifier))).isVisible();
         attachScreenshot(page, "Role Added: " + userIdentifier);
+    }
+
+    @Step("Verifying that user with identifier: {userIdentifier} is added to the list")
+    public void verifyUserNotAdded(String userIdentifier) {
+        assertThat(userList.filter(new Locator.FilterOptions().setHasText(userIdentifier))).not().isVisible();
+        attachScreenshot(page, "Role Added: " + userIdentifier);
+    }
+
+    @Step("Click on Cancel button to cancel adding new user")
+    public void clickCancelButton() {
+        cancelButton.click();
+    }
+
+    @Step("Canceling a random admin user creation")
+    public String cancelUserCreation() {
+        clickAddUserButtonInHeader();
+        selectRoleId();
+        String userId = generateRandomValue(5);
+        enterUserId(userId);
+        enterName(generateRandomValue(8));
+        enterUsername(generateRandomValue(8));
+        enterPassword(VALID_PASSWORD);
+        enterMailId(generateRandomEmail());
+        enterMobileNumber(IndiaMobileNumberGenerator());
+        clickCancelButton();
+
+        return userId;
+    }
+
+    @Step("Verifying that mandatory field error message is displayed when trying to add a user without filling required fields")
+    public void verifyMandatoryFieldErrorMessage(String message) {
+        assertThat(page.getByText(message).first()).isVisible();
+        attachScreenshot(page, "Mandatory Field Error Message Displayed");
     }
 }

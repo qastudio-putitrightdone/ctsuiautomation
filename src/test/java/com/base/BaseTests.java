@@ -26,16 +26,14 @@ public class BaseTests {
 
     @BeforeMethod
     public void beforeMethod() {
-        if (page == null) {
-            List<Object> playwrightObjects = launchBrowser
-                    .initiateBrowserAndApplication(fetchBaseConfigData().getProperty("browser"),
-                            fetchBaseConfigData().getProperty("url"));
-            page = (Page) playwrightObjects.get(2);
-            browserContext = (BrowserContext) playwrightObjects.get(1);
-            playwright = (Playwright) playwrightObjects.get(0);
-            page.setDefaultTimeout(30000);
-            PlaywrightAssertions.setDefaultAssertionTimeout(15000);
-        }
+        List<Object> playwrightObjects = launchBrowser
+                .initiateBrowserAndApplication(fetchBaseConfigData().getProperty("browser"),
+                        fetchBaseConfigData().getProperty("url"));
+        page = (Page) playwrightObjects.get(2);
+        browserContext = (BrowserContext) playwrightObjects.get(1);
+        playwright = (Playwright) playwrightObjects.get(0);
+        page.setDefaultTimeout(30000);
+        PlaywrightAssertions.setDefaultAssertionTimeout(15000);
     }
 
     private Properties fetchBaseConfigData() {
