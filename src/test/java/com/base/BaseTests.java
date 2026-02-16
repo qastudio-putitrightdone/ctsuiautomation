@@ -5,11 +5,16 @@ import com.microsoft.playwright.BrowserContext;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Playwright;
 import com.microsoft.playwright.assertions.PlaywrightAssertions;
+import io.qameta.allure.Allure;
 import org.athena.LaunchBrowser;
 import org.athena.ReadConfigData;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Properties;
 
@@ -35,6 +40,26 @@ public class BaseTests {
         PlaywrightAssertions.setDefaultAssertionTimeout(15000);
     }
 
+    private void clearDownloads() {
+        try {
+            Path downloadsPath = Paths.get("src/test/resources/downloads");
+            if (Files.exists(downloadsPath)) {
+                Allure.step("Clearing downloaded files");
+                Files.walk(downloadsPath)
+                        .filter(Files::isRegularFile)
+                        .forEach(file -> {
+                            try {
+                                Files.delete(file);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        });
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private Properties fetchBaseConfigData() {
         String filePath = System.getProperty("user.dir") + "/src/main/resources/config.properties";
         ReadConfigData readConfigData = new ReadConfigData();
@@ -48,6 +73,8 @@ public class BaseTests {
             page.navigate(users_page_url);
         } else if (pageName.equals(String.valueOf(PagenameEnums.return_reason))) {
             page.navigate(return_reason_page_url);
+        } else if (pageName.equals(String.valueOf(PagenameEnums.inward_clering_register))) {
+            page.navigate(inward_clearing_register_page_url);
         }
     }
 
@@ -55,6 +82,7 @@ public class BaseTests {
     public void closeContext() {
         if (page != null) {
             page.close();
+            clearDownloads();
         }
     }
 }

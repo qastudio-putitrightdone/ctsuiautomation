@@ -50,4 +50,21 @@ public class TestData {
     public static String generateRandomEmail() {
         return generateRandomValue(8) + "@" + generateRandomValue(5) + ".com";
     }
+
+    public static String firstDayOfMonth(int monthsBack) {
+        LocalDate now = LocalDate.now();
+        LocalDate firstOfTarget = now.withDayOfMonth(1).minusMonths(monthsBack);
+        return firstOfTarget.toString(); // yyyy-MM-dd
+    }
+
+    public static String firstDayOfMonth() {
+        return firstDayOfMonth(0);
+    }
+
+    public static boolean isReallyBlank(String str) {
+        if (str == null) return true;
+        return str.replace("\u00A0", "")
+                .trim()
+                .isEmpty();
+    }
 }

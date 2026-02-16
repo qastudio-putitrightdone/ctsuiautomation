@@ -4,5 +4,6 @@ public enum PagenameEnums {
 
     user_role,
     users,
-    return_reason
+    return_reason,
+    inward_clering_register
 }
