@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="CTS Test Suite" verbose="1">
+  <test name="RoleTests">
+    <classes>
+      <class name="com.cts.RoleTests.RoleTests"/>
+        <class name="com.cts.MasterTests.ReturnReasonTests"/>
+        <class name="com.cts.UserTests.UserTests"/>
+        <class name="com.cts.ReportsManagement.ClearingRegisterTests"/>
+    </classes>
+  </test>
+</suite>
